@@ -52,3 +52,28 @@ class LeadRepository:
         connection.close()
 
         return result
+
+    def get_all(self):
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                raw_request,
+                service,
+                summary,
+                priority,
+                questions,
+                created_at
+            FROM leads
+            ORDER BY id DESC
+            """
+        )
+
+        rows = cursor.fetchall()
+
+        connection.close()
+
+        return rows
