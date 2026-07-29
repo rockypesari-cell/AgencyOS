@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI
 
 from src.api.schemas import (
@@ -8,6 +10,9 @@ from src.api.schemas import (
 
 from src.workflows.lead_workflow import LeadWorkflow
 
+from src.storage.database import initialize_database
+from src.storage.lead_repository import LeadRepository
+
 
 app = FastAPI(
     title="AgencyOS API",
@@ -16,11 +21,11 @@ app = FastAPI(
 
 
 workflow = LeadWorkflow()
+repository = LeadRepository()
 
 
-# temporary memory storage
-# later replaced with repository/database
-leads = []
+# Initialize SQLite database
+initialize_database()
 
 
 @app.get("/")
@@ -42,7 +47,7 @@ def create_lead(
         data.request
     )
 
-    leads.append(lead)
+    repository.save(lead)
 
     return LeadResponse(
         raw_request=lead.raw_request,
@@ -60,16 +65,22 @@ def create_lead(
 )
 def get_leads():
 
-    return LeadListResponse(
-        leads=[
+    rows = repository.get_all()
+
+    leads = []
+
+    for row in rows:
+        leads.append(
             LeadResponse(
-                raw_request=lead.raw_request,
-                service=lead.service,
-                summary=lead.summary,
-                priority=lead.priority,
-                questions=lead.questions,
-                status=lead.status.value,
+                raw_request=row[1],
+                service=row[2],
+                summary=row[3],
+                priority=row[4],
+                questions=json.loads(row[5]),
+                status="new",
             )
-            for lead in leads
-        ]
+        )
+
+    return LeadListResponse(
+        leads=leads
     )
