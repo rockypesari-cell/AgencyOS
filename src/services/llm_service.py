@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from config.settings import settings
+from src.config.settings import settings
 
 
 class LLMService:
