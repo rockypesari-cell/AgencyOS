@@ -20,3 +20,11 @@ class LeadResponse(BaseModel):
     priority: str
     questions: list[str]
     status: str
+
+
+class LeadListResponse(BaseModel):
+    """
+    Response containing multiple leads.
+    """
+
+    leads: list[LeadResponse]
