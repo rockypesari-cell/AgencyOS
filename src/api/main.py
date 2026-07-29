@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from src.api.schemas import LeadCreateRequest, LeadResponse
 from src.workflows.lead_workflow import LeadWorkflow
 
 
@@ -20,22 +21,22 @@ def health_check():
     }
 
 
-@app.post("/leads")
-def create_lead(request: dict):
-    lead_request = request.get(
-        "request",
-        ""
-    )
-
+@app.post(
+    "/leads",
+    response_model=LeadResponse
+)
+def create_lead(
+    data: LeadCreateRequest
+):
     lead = workflow.execute(
-        lead_request
+        data.request
     )
 
-    return {
-        "raw_request": lead.raw_request,
-        "service": lead.service,
-        "summary": lead.summary,
-        "priority": lead.priority,
-        "questions": lead.questions,
-        "status": lead.status.value,
-    }
+    return LeadResponse(
+        raw_request=lead.raw_request,
+        service=lead.service,
+        summary=lead.summary,
+        priority=lead.priority,
+        questions=lead.questions,
+        status=lead.status.value,
+    )
