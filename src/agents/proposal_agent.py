@@ -1,111 +1,88 @@
 """
 ProposalAgent - Generates professional project proposals.
 
-Input:  Lead data (service, summary, priority, budget)
-Output: Proposal text, suggested price, timeline
-
 Architecture:
     - Inherits BaseAgent
-    - Uses LLMService for AI generation
+    - Uses PricingService for pricing (no pricing logic here)
+    - Uses LLMService for AI generation (optional)
     - Falls back to template if LLM unavailable
-    - No business logic. Just generation.
 """
 
 from typing import Any, Dict, Optional
 from core.base_agent import BaseAgent
-
-
-# ─── Pricing Reference (MVP) ─────────────────────────────────
-# Later this moves to a PricingService.
-BASE_PRICES = {
-    "logo_design": 150,
-    "brand_identity": 400,
-    "web_design": 600,
-    "presentation": 200,
-    "illustration": 250,
-    "social_media": 180,
-    "poster": 120,
-    "video": 500,
-    "content": 200,
-    "translation": 100,
-    "unknown": 200,
-}
-
-TIMELINES = {
-    "logo_design": "3-5 days",
-    "brand_identity": "7-14 days",
-    "web_design": "14-21 days",
-    "presentation": "3-5 days",
-    "illustration": "5-7 days",
-    "social_media": "3-5 days",
-    "poster": "2-3 days",
-    "video": "7-14 days",
-    "content": "5-7 days",
-    "translation": "3-5 days",
-    "unknown": "5-7 days",
-}
+from services.pricing_service import PricingService
 
 
 class ProposalAgent(BaseAgent):
     """Generates project proposals from lead data."""
 
-    def __init__(self, llm_service=None):
+    def __init__(self, llm_service=None, pricing_service=None):
         super().__init__(
             name="proposal_generator",
             description="Generates professional proposals from lead data.",
-            version="0.2.0",
-            skills=["proposal_writing", "pricing_estimation"],
-            tools=["llm_service"],
+            version="0.3.0",
+            skills=["proposal_writing"],
+            tools=["llm_service", "pricing_service"],
         )
         self._llm = llm_service
+        self._pricing = pricing_service or PricingService()
 
     def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        service = input_data.get("service", "unknown").lower().replace(" ", "_")
+        service = input_data.get("service", "unknown")
         summary = input_data.get("summary", "")
         priority = input_data.get("priority", "normal")
+        complexity = input_data.get("complexity", "normal")
         client_name = input_data.get("client_name", "Valued Client")
+        rush = input_data.get("rush", False)
 
-        price = BASE_PRICES.get(service, BASE_PRICES["unknown"])
-        timeline = TIMELINES.get(service, TIMELINES["unknown"])
+        # Get pricing from PricingService
+        price_info = self._pricing.calculate(
+            service=service,
+            priority=priority,
+            complexity=complexity,
+            rush=rush,
+        )
 
-        if priority == "high":
-            price = int(price * 1.3)
-            timeline = timeline.replace("days", "days (rush)")
+        price = price_info["final_price"]
+        timeline = price_info["timeline"]
+        currency = price_info["currency"]
 
-        # Try LLM first, fallback to template
+        # Generate proposal text
         if self._llm:
             try:
                 proposal_text = self._generate_with_llm(
-                    service, summary, client_name, price, timeline
+                    service, summary, client_name, price, timeline, currency
                 )
             except Exception:
                 proposal_text = self._generate_template(
-                    service, summary, client_name, price, timeline
+                    service, summary, client_name, price, timeline, currency
                 )
         else:
             proposal_text = self._generate_template(
-                service, summary, client_name, price, timeline
+                service, summary, client_name, price, timeline, currency
             )
 
         return {
             "proposal_text": proposal_text,
+            "pricing": price_info,
             "suggested_price": price,
-            "currency": "USD",
+            "currency": currency,
             "timeline": timeline,
-            "service": service,
+            "service": price_info["service"],
             "priority": priority,
             "status": "draft",
         }
 
     def _generate_with_llm(
-        self, service, summary, client_name, price, timeline
+        self, service, summary, client_name, price, timeline, currency
     ) -> str:
+        service_name = service.replace("_", " ").title()
         prompt = f"""Write a professional project proposal for:
 
-Service: {service.replace('_', ' ').title()}
+Service: {service_name}
 Client: {client_name}
 Project Summary: {summary}
-Price: ${price} USD
+Price: ${price} {currency}
 Timeline: {timeline}
 
 Requirements:
@@ -114,11 +91,10 @@ Requirements:
 - Include scope, timeline, pricing
 - End with next steps
 """
-        response = self._llm.generate(prompt)
-        return response
+        return self._llm.generate(prompt)
 
     def _generate_template(
-        self, service, summary, client_name, price, timeline
+        self, service, summary, client_name, price, timeline, currency
     ) -> str:
         service_name = service.replace("_", " ").title()
         return f"""PROJECT PROPOSAL
@@ -139,7 +115,7 @@ TIMELINE
 Estimated delivery: {timeline}
 
 INVESTMENT
-Total: ${price} USD
+Total: ${price} {currency}
 Payment: 50% upfront, 50% upon delivery
 
 NEXT STEPS

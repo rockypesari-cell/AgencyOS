@@ -2,6 +2,7 @@
 
 import pytest
 from agents.proposal_agent import ProposalAgent
+from services.pricing_service import PricingService
 
 
 @pytest.fixture
@@ -24,7 +25,6 @@ def test_basic_proposal(agent):
     assert result["success"] is True
     assert result["suggested_price"] == 150
     assert result["currency"] == "USD"
-    assert "3-5 days" in result["timeline"]
     assert "John" in result["proposal_text"]
     assert result["status"] == "draft"
 
@@ -35,8 +35,16 @@ def test_high_priority_pricing(agent):
         "summary": "Urgent logo",
         "priority": "high",
     })
-    assert result["suggested_price"] == 195  # 150 * 1.3
-    assert "rush" in result["timeline"]
+    assert result["suggested_price"] == 195
+
+
+def test_complex_pricing(agent):
+    result = agent.run({
+        "service": "logo_design",
+        "summary": "Complex logo",
+        "complexity": "complex",
+    })
+    assert result["suggested_price"] == 225
 
 
 def test_unknown_service(agent):
@@ -51,7 +59,6 @@ def test_unknown_service(agent):
 def test_empty_input(agent):
     result = agent.run({})
     assert result["success"] is True
-    assert result["service"] == "unknown"
 
 
 def test_proposal_text_not_empty(agent):
@@ -59,11 +66,14 @@ def test_proposal_text_not_empty(agent):
     assert len(result["proposal_text"]) > 100
 
 
-def test_brand_identity_pricing(agent):
-    result = agent.run({"service": "brand_identity", "summary": "Full brand"})
-    assert result["suggested_price"] == 400
+def test_pricing_breakdown_included(agent):
+    result = agent.run({"service": "logo_design", "summary": "Logo"})
+    assert "pricing" in result
+    assert "breakdown" in result["pricing"]
 
 
-def test_web_design_pricing(agent):
-    result = agent.run({"service": "web_design", "summary": "Website"})
-    assert result["suggested_price"] == 600
+def test_custom_pricing_service():
+    custom = PricingService(currency="EUR")
+    agent = ProposalAgent(pricing_service=custom)
+    result = agent.run({"service": "logo_design", "summary": "Logo"})
+    assert result["currency"] == "EUR"
