@@ -1,0 +1,140 @@
+Folder PATH listing
+Volume serial number is 903B-113A
+N:.
+³   .gitignore
+³   agencyos.db
+³   git
+³   tree.txt
+³   
+ÃÄÄÄdocs
+³   ³   ARCHITECTURE.md
+³   ³   PROJECT_MEMORY.md
+³   ³   PROJECT_STATUS.md
+³   ³   ROADMAP.md
+³   ³   tree.md
+³   ³   VISION.md
+³   ³   
+³   ÃÄÄÄADR
+³   ³       ADR-001.md
+³   ³       ADR-002.md
+³   ³       
+³   ÃÄÄÄresearch
+³   ³       aider.md
+³   ³       openhands.md
+³   ³       
+³   ÀÄÄÄsprints
+³           Sprint-01.md
+³           Sprint-02.md
+³           Sprint-03.md
+³           
+ÃÄÄÄlegacy
+³       agent.py
+³       extractor.py
+³       formatter.py
+³       lead_manager.py
+³       PROJECT_STATE.md
+³       prompts.py
+³       reviewer.py
+³       test_extract.py
+³       test_lead.py
+³       
+ÃÄÄÄsrc
+³   ³   main.py
+³   ³   
+³   ÃÄÄÄagents
+³   ³   ³   lead_intake.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           lead_intake.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄapi
+³   ³   ³   main.py
+³   ³   ³   schemas.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           main.cpython-314.pyc
+³   ³           schemas.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄconfig
+³   ³   ³   prompts.py
+³   ³   ³   settings.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           prompts.cpython-314.pyc
+³   ³           settings.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄcore
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÃÄÄÄentities
+³   ³   ³       __init__.py
+³   ³   ³       
+³   ³   ÀÄÄÄstates
+³   ³           __init__.py
+³   ³           
+³   ÃÄÄÄdomain
+³   ³   ³   lead.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           lead.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄmemory
+³   ÃÄÄÄservices
+³   ³   ³   lead_service.py
+³   ³   ³   lead_state_service.py
+³   ³   ³   llm_service.py
+³   ³   ³   llm_test.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           lead_state_service.cpython-314.pyc
+³   ³           llm_service.cpython-314.pyc
+³   ³           llm_test.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄskills
+³   ³   ³   lead_analysis.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           lead_analysis.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄstorage
+³   ³   ³   database.py
+³   ³   ³   lead_repository.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           database.cpython-314.pyc
+³   ³           lead_repository.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÃÄÄÄtools
+³   ³       __init__.py
+³   ³       
+³   ÃÄÄÄworkflows
+³   ³   ³   lead_workflow.py
+³   ³   ³   __init__.py
+³   ³   ³   
+³   ³   ÀÄÄÄ__pycache__
+³   ³           lead_workflow.cpython-314.pyc
+³   ³           __init__.cpython-314.pyc
+³   ³           
+³   ÀÄÄÄ__pycache__
+³           main.cpython-314.pyc
+³           
+ÃÄÄÄtests
+ÀÄÄÄ__pycache__
+        extractor.cpython-314.pyc
+        formatter.cpython-314.pyc
+        lead_manager.cpython-314.pyc
+        prompts.cpython-314.pyc
+        reviewer.cpython-314.pyc
+        
