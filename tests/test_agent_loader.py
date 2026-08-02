@@ -29,11 +29,15 @@ def test_load_agents_has_proposal():
 
 def test_load_agents_custom_list():
     class CustomAgent(BaseAgent):
+        def __init__(self):
+            super().__init__(name="custom", description="Custom test agent")
+
         def execute(self, input_data):
             return {}
 
     registry = load_agents(agent_classes=[CustomAgent])
     assert registry.count() == 1
+    assert registry.exists("custom")
 
 
 def test_load_agents_empty_list():
@@ -47,3 +51,15 @@ def test_lead_intake_execute():
     result = agent.run({"request": "I need a logo"})
     assert result["success"] is True
     assert result["status"] == "new"
+
+
+def test_proposal_agent_execute():
+    registry = load_agents()
+    agent = registry.get("proposal_generator")
+    result = agent.run({
+        "service": "logo_design",
+        "summary": "Need a logo",
+        "client_name": "Test",
+    })
+    assert result["success"] is True
+    assert result["suggested_price"] == 150
