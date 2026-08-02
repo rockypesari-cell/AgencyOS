@@ -4,10 +4,12 @@ from .base_agent import BaseAgent
 from .agent_registry import AgentRegistry
 from .base_workflow import BaseWorkflow
 from .workflow_registry import WorkflowRegistry
+from .service_container import ServiceContainer
 
 __all__ = [
     "BaseAgent",
     "AgentRegistry",
     "BaseWorkflow",
     "WorkflowRegistry",
+    "ServiceContainer",
 ]
